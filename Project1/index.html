@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Hydration Tracker</h1>
+
+    <!-- Water Input -->
+    <label for="water">Amount of Water (ml):</label>
+    <input type="number" id="water" value="250">
+    <button 
+    onclick="logWater()">Log Water
+    <i class="fa fa-tint"></i> 
+    </button>
+
+    <!-- Daily Progress -->
+    <h2>Daily Progress</h2>
+    <p id="progress">Total Water Today: 0ml</p>
+    <p id="goal">Goal: 2000ml</p>
+
+    <!-- History -->
+    <h2>History</h2>
+    <div id="history"></div>
+
+    <script src="app.js"></script>
+
+    <a href="History.html" target="_blank"> 
+        <button id="visitHistoryButton"> Visit History</button>
+</a>
+</body>
+</html>
+

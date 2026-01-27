@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <style>
+        .login-container, .register-container { display: none; }
+        .active { display: block; }
+        table { margin: 20px; }
+        input { padding: 5px; margin: 5px; }
+        button { padding: 5px 15px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <center>
+        <h3>Welcome to QUENCH</h3>
+        <button onclick="toggleForm('login')">Login</button>
+        <button onclick="toggleForm('register')">Register</button>
+
+        <div id="login" class="login-container active">
+            <h3>Login Here</h3>
+            <form id="loginForm">
+                <table>
+                    <tr>
+                        <td>Username:</td>
+                        <td><input type="text" name="user" id="loginUser"></td>
+                    </tr>
+                    <tr>
+                        <td>Password:</td>
+                        <td><input type="password" name="user_pass" id="loginPass"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit">Login</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <div id="register" class="register-container">
+            <h3>Create Account</h3>
+            <form id="registerForm">
+                <table>
+                    <tr>
+                        <td>Email:</td>
+                        <td><input type="email" id="regEmail"></td>
+                    </tr>
+                    <tr>
+                        <td>Username:</td>
+                        <td><input type="text" id="regUser"></td>
+                    </tr>
+                    <tr>
+                        <td>Password:</td>
+                        <td><input type="password" id="regPass"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit">Register</button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </center>
+
+    <script>
+        // Initialize users array in localStorage if not exists
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+
+        function toggleForm(formType) {
+            document.getElementById('login').classList.remove('active');
+            document.getElementById('register').classList.remove('active');
+            document.getElementById(formType).classList.add('active');
+        }
+
+        // Register new user
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const users = JSON.parse(localStorage.getItem('users'));
+            const newUser = {
+                email: document.getElementById('regEmail').value,
+                username: document.getElementById('regUser').value,
+                password: document.getElementById('regPass').value
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            toggleForm('login');
+        });
+
+        // Login handler
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const users = JSON.parse(localStorage.getItem('users'));
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+
+            const user = users.find(u => u.username === username && u.password === password);
+            if (user) {
+                localStorage.setItem('currentUser', username);
+                window.location.href = 'index.html';
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+    </script>
+</body>

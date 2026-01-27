@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Quench</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Theme variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --highlight-color: #0099ff;
+            --button-color: #0099ff;
+            --button-text: #ffffff;
+        }
+        
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --highlight-color: #4da6ff;
+            --button-color: #0077cc;
+            --button-text: #ffffff;
+        }
+        
+        .high-contrast {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+            --highlight-color: #ffff00;
+            --button-color: #ffffff;
+            --button-text: #000000;
+        }
+        
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+
+        .dark-mode nav, .high-contrast nav {
+            background: #000000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a, .nav-links button {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+
+        .high-contrast .nav-links a {
+            color: var(--highlight-color);
+            border: 1px solid var(--highlight-color);
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .profile-card, .milestone-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .profile-card, 
+        .high-contrast .milestone-card {
+            border: 2px solid var(--border-color);
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 3px solid var(--highlight-color);
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture i {
+            font-size: 50px;
+            color: var(--border-color);
+        }
+
+        .profile-info {
+            margin-top: 2rem;
+        }
+
+        .profile-info p {
+            margin: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Milestone badges styles */
+        .milestone-badges {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .badge {
+            position: relative;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .badge:hover {
+            transform: scale(1.1);
+        }
+
+        .badge-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            background: var(--bg-color);
+            border: 2px solid var(--highlight-color);
+            color: var(--highlight-color);
+        }
+
+        .badge-locked {
+            opacity: 0.4;
+            filter: grayscale(100%);
+        }
+
+        .badge-locked .badge-icon {
+            border-color: var(--border-color);
+            color: var(--border-color);
+        }
+
+        .badge h4 {
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        .badge-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 5px;
+            width: 200px;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        .badge:hover .badge-tooltip {
+            display: block;
+        }
+
+        .high-contrast .badge-tooltip {
+            border: 2px solid var(--border-color);
+        }
+
+        /* Stats summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .stat-item {
+            border: 2px solid var(--border-color);
+        }
+
+        .stat-item .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--highlight-color);
+        }
+
+        /* Logout confirmation */
+        .logout-confirm {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .logout-confirm p {
+            margin-top: 0;
+        }
+
+        .logout-confirm .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-confirm button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-confirm .confirm {
+            background: #ff4444;
+            color: white;
+            border: none;
+        }
+
+        .logout-confirm .cancel {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .logout-confirm .confirm {
+            background: var(--highlight-color);
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestone.html">Milestones</a>
+                <a href="facts.html">Fun Facts</a>
+                <a href="profile.html" class="active">Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="history.html">History</a>
+                <a href="#" id="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <input type="file" id="fileInput" accept="image/*">
+            <div class="profile-picture" onclick="document.getElementById('fileInput').click()">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <p id="username">Loading...</p>
+                <p id="email">Loading...</p>
+            </div>
+
+            <div class="stats-summary">
+                <div class="stat-item">
+                    <div class="value" id="totalDays">0</div>
+                    <div class="label">Days Active</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="longestStreak">0</div>
+                    <div class="label">Longest Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="totalIntake">0</div>
+                    <div class="label">Total Intake (L)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="milestone-card">
+            <h2>Your Achievements</h2>
+            <div class="milestone-badges" id="milestone-badges">
+                <!-- Badges will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation -->
+    <div class="logout-confirm" id="logout-confirm">
+        <p>Are you sure you want to logout?</p>
+        <div class="buttons">
+            <button class="cancel" id="cancel-logout">Cancel</button>
+            <button class="confirm" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Define milestones
+        const milestones = [
+            {
+                id: 'rookie',
+                name: 'Hydration Rookie',
+                icon: '🌱',
+                description: 'Complete your first day of tracking',
+                requirement: 'Track at least 1000ml in a single day',
+                reward: 'Custom profile badge'
+            },
+            {
+                id: 'warrior',
+                name: 'Week Warrior',
+                icon: '🔥',
+                description: '7-day perfect hydration streak',
+                requirement: 'Meet your daily goal for 7 consecutive days',
+                reward: 'New bottle themes'
+            },
+            {
+                id: 'master',
+                name: 'Hydration Master',
+                icon: '💫',
+                description: '30-day perfect hydration streak',
+                requirement: 'Meet your daily goal for 30 consecutive days',
+                reward: 'Golden bottle theme'
+            },
+            {
+                id: 'ocean',
+                name: 'Ocean Guardian',
+                icon: '🌊',
+                description: 'Save 100 plastic bottles worth of water',
+                requirement: 'Track at least 50 liters of water (approx. 100 bottles)',
+                reward: 'Special effects unlock'
+            },
+            {
+                id: 'consistency',
+                name: 'Consistency King',
+                icon: '👑',
+                description: 'Drink water at regular intervals',
+                requirement: 'Log water at least 5 times a day for 10 days',
+                reward: 'Premium stats access'
+            },
+            {
+                id: 'morning',
+                name: 'Morning Freshness',
+                icon: '🌅',
+                description: 'Start your day hydrated',
+                requirement: 'Log water within 30 minutes of waking up for 15 days',
+                reward: 'Morning routine tips'
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply theme settings
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const highContrast = localStorage.getItem('highContrast') === 'true';
+            
+            if (highContrast) {
+                document.body.classList.add('high-contrast');
+            } else if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            // Load user data
+            loadUserData();
+            
+            // Load milestones
+            loadMilestones();
+            
+            // Load profile statistics
+            calculateStats();
+        });
+
+        // Load user data
+        function loadUserData() {
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const currentUser = localStorage.getItem('currentUser');
+            const user = users.find(u => u.username === currentUser);
+            
+            if (user) {
+                document.getElementById('username').textContent = `Username: ${user.username}`;
+                document.getElementById('email').textContent = `Email: ${user.email}`;
+            }
+        }
+
+        // Load milestones/badges
+        function loadMilestones() {
+            const badgesContainer = document.getElementById('milestone-badges');
+            const unlockedMilestones = getUnlockedMilestones();
+            
+            milestones.forEach(milestone => {
+                const isUnlocked = unlockedMilestones.includes(milestone.id);
+                const badgeElement = document.createElement('div');
+                badgeElement.className = `badge ${isUnlocked ? '' : 'badge-locked'}`;
+                
+                badgeElement.innerHTML = `
+                    <div class="badge-icon">${milestone.icon}</div>
+                    <h4>${milestone.name}</h4>
+                    <div class="badge-tooltip">
+                        <strong>${milestone.description}</strong>
+                        <p>Requirement: ${milestone.requirement}</p>
+                        <p>Reward: ${milestone.reward}</p>
+                    </div>
+                `;
+                
+                badgesContainer.appendChild(badgeElement);
+            });
+        }
+        
+        // Get unlocked milestones based on user history
+        function getUnlockedMilestones() {
+            const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+            const unlockedMilestones = [];
+            const goal = parseInt(localStorage.getItem('waterGoal')) || 2000;
+            
+            if (history.length === 0) {
+                return unlockedMilestones;
+            }
+            
+            // Group history by day
+            const dailyTotals = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                dailyTotals[date] = (dailyTotals[date] || 0) + entry.amount;
+            });
+            
+            // Check if any day has at least 1000ml (Rookie milestone)
+            if (Object.values(dailyTotals).some(total => total >= 1000)) {
+                unlockedMilestones.push('rookie');
+            }
+            
+            // Check for streaks
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let dates = Object.keys(dailyTotals).sort((a, b) => new Date(a) - new Date(b));
+            
+            for (let i = 0; i < dates.length; i++) {
+                if (dailyTotals[dates[i]] >= goal) {
+                    currentStreak++;
+                    
+                    // Check if dates are consecutive
+                    if (i > 0) {
+                        const prevDate = new Date(dates[i-1]);
+                        const currDate = new Date(dates[i]);
+                        const dayDiff = (currDate - prevDate) / (1000 * 3600 * 24);
+                        
+                        if (dayDiff > 1) {
+                            currentStreak = 1; // Reset streak if days are not consecutive
+                        }
+                    }
+                    
+                    longestStreak = Math.max(longestStreak, currentStreak);
+                } else {
+                    currentStreak = 0;
+                }
+            }
+            
+            // Week Warrior (7-day streak)
+            if (longestStreak >= 7) {
+                unlockedMilestones.push('warrior');
+            }
+            
+            // Hydration Master (30-day streak)
+            if (longestStreak >= 30) {
+                unlockedMilestones.push('master');
+            }
+            
+            // Ocean Guardian (50 liters)
+            const totalIntake = Object.values(dailyTotals).reduce((sum, total) => sum + total, 0);
+            if (totalIntake >= 50000) { // 50 liters = 50,000 ml
+                unlockedMilestones.push('ocean');
+            }
+            
+            // Check for consistency (5 entries/day for 10 days)
+            const entriesPerDay = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                entriesPerDay[date] = (entriesPerDay[date] || 0) + 1;
+            });
+            
+            const consistentDays = Object.values(entriesPerDay).filter(count => count >= 5).length;
+            if (consistentDays >= 10) {
+                unlockedMilestones.push('consistency');
+            }
+            
+            // Morning Freshness (first entry before 8 AM for 15 days)
+            const earlyMorningDays = new Set();
+            history.forEach(entry => {
+                const entryDate = new Date(entry.timestamp);
+                const date = entryDate.toDateString();
+                if (entryDate.getHours() < 8) {
+                    earlyMorningDays.add(date);
+                }
+            });
+            
+            if (earlyMorningDays.size >= 15) {
+                unlockedMilestones.push('morning');
+            }
+            
+            return unlockedMilestones;
+        }
+        
+        // Calculate and update profile statistics
+        function calculateStats() {
+            const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+            const goal = parseInt(localStorage.getItem('waterGoal')) || 2000;
+            
+            if (history.length === 0) {
+                return;
+            }
+            
+            // Group history by day
+            const dailyTotals = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                dailyTotals[date] = (dailyTotals[date] || 0) + entry.amount;
+            });
+            
+            // Calculate days active
+            const totalDays = Object.keys(dailyTotals).length;
+            document.getElementById('totalDays').textContent = totalDays;
+            
+            // Calculate longest streak
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let dates = Object.keys(dailyTotals).sort((a, b) => new Date(a) - new Date(b));
+            
+            for (let i = 0; i < dates.length; i++) {
+                if (dailyTotals[dates[i]] >= goal) {
+                    currentStreak++;
+                    
+                    // Check if dates are consecutive
+                    if (i > 0) {
+                        const prevDate = new Date(dates[i-1]);
+                        const currDate = new Date(dates[i]);
+                        const dayDiff = (currDate - prevDate) / (1000 * 3600 * 24);
+                        
+                        if (dayDiff > 1) {
+                            currentStreak = 1; // Reset streak if days are not consecutive
+                        }
+                    }
+                    
+                    longestStreak = Math.max(longestStreak, currentStreak);
+                } else {
+                    currentStreak = 0;
+                }
+            }
+            
+            document.getElementById('longestStreak').textContent = longestStreak;
+            
+            // Calculate total intake in liters
+            const totalIntake = Object.values(dailyTotals).reduce((sum, total) => sum + total, 0);
+            document.getElementById('totalIntake').textContent = (totalIntake / 1000).toFixed(1);
+        }
+
+        // Handle profile picture
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profilePic = document.querySelector('.profile-picture');
+                    profilePic.innerHTML = `<img src="${e.target.result}" alt="Profile Picture">`;
+                    localStorage.setItem('profilePicture', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load saved profile picture
+        const savedPicture = localStorage.getItem('profilePicture');
+        if (savedPicture) {
+            const profilePic = document.querySelector('.profile-picture');
+            profilePic.innerHTML = `<img src="${savedPicture}" alt="Profile Picture">`;
+        }
+
+        // Logout confirmation
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('logout-confirm').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-logout').addEventListener('click', () => {
+            document.getElementById('logout-confirm').style.display = 'none';
+        });
+        
+        document.getElementById('confirm-logout').addEventListener('click', () => {
+            window.location.href = 'HomeScreen.html';
+        });
+    </script>
+</body>
+</html>

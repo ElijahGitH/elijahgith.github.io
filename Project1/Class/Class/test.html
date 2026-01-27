@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Tracker Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #ddd;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .tracking-card, .stats-card, .history-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .history-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestones.html">Milestones</a>
+                <a href="facts.html">Fun Facts</a>
+                <a href="profile.html">Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="HomeScreen.html">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Rest of your existing HTML content -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Load dark mode setting
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            document.body.classList.toggle('dark-mode', darkMode);
+
+            let totalWater = parseInt(localStorage.getItem('todayWater')) || 0;
+            const goal = parseInt(localStorage.getItem('waterGoal')) || 2000;
+
+            function updateProgress() {
+                const percentage = Math.min((totalWater / goal) * 100, 100);
+                document.getElementById('progress-fill').style.height = percentage + '%';
+                document.getElementById('progress').textContent = `${totalWater} / ${goal} ml`;
+                document.getElementById('goalProgress').textContent = `${Math.round(percentage)}%`;
+
+                const fill = document.getElementById('progress-fill');
+                if (percentage < 33) {
+                    fill.style.background = 'linear-gradient(180deg, #ff9999, #ff6666)';
+                } else if (percentage < 66) {
+                    fill.style.background = 'linear-gradient(180deg, #99ccff, #66b3ff)';
+                } else {
+                    fill.style.background = 'linear-gradient(180deg, #99ff99, #66cc66)';
+                }
+
+                localStorage.setItem('todayWater', totalWater.toString());
+            }
+
+            // Rest of your existing JavaScript code
+
+            // Watch for dark mode changes
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'darkMode') {
+                    document.body.classList.toggle('dark-mode', e.newValue === 'true');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

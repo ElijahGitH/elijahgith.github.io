@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milestones - Quench</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Theme variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --highlight-color: #0099ff;
+            --button-color: #0099ff;
+            --button-text: #ffffff;
+            --progress-bg: #dddddd;
+        }
+        
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --highlight-color: #4da6ff;
+            --button-color: #0077cc;
+            --button-text: #ffffff;
+            --progress-bg: #444444;
+        }
+        
+        .high-contrast {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+            --highlight-color: #ffff00;
+            --button-color: #ffffff;
+            --button-text: #000000;
+            --progress-bg: #333333;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+        
+        .dark-mode nav, .high-contrast nav {
+            background: #000000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+        
+        .high-contrast .nav-links a {
+            color: var(--highlight-color);
+            border: 1px solid var(--highlight-color);
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 1rem; 
+        }
+
+        /* Milestone specific styles */
+        .milestone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .milestone-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+        }
+        
+        .high-contrast .milestone-card {
+            border: 2px solid var(--border-color);
+        }
+        
+        .milestone-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .milestone-icon {
+            font-size: 2.5rem;
+            color: var(--highlight-color);
+            margin-bottom: 1rem;
+        }
+        
+        .milestone-locked {
+            opacity: 0.5;
+        }
+        
+        .dark-mode .milestone-locked,
+        .high-contrast .milestone-locked {
+            opacity: 0.3;
+        }
+        
+        .milestone-locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .progress-bar {
+            background: var(--progress-bg);
+            height: 10px;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: var(--highlight-color);
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+        /* Logout confirmation */
+        .logout-confirm {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .logout-confirm p {
+            margin-top: 0;
+        }
+
+        .logout-confirm .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-confirm button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-confirm .confirm {
+            background: #ff4444;
+            color: white;
+            border: none;
+        }
+
+        .logout-confirm .cancel {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .logout-confirm .confirm {
+            background: var(--highlight-color);
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestone.html" class="active">Milestones</a>
+                <a href="facts.html">Fun Facts</a>
+                <a href="profile.html">Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="history.html">History</a>
+                <a href="#" id="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Milestones Page Content -->
+    <div class="container" id="milestones-page">
+        <h1>Hydration Milestones</h1>
+        <div class="milestone-grid" id="milestone-grid">
+            <!-- Milestones will be loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- Logout confirmation -->
+    <div class="logout-confirm" id="logout-confirm">
+        <p>Are you sure you want to logout?</p>
+        <div class="buttons">
+            <button class="cancel" id="cancel-logout">Cancel</button>
+            <button class="confirm" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Define milestones data
+        const milestones = [
+            {
+                id: 'rookie',
+                name: 'Hydration Rookie',
+                icon: '🌱',
+                description: 'Complete your first day of tracking',
+                requirement: 'Track at least 1000ml in a single day',
+                reward: 'Custom profile badge',
+                progress: 0
+            },
+            {
+                id: 'warrior',
+                name: 'Week Warrior',
+                icon: '🔥',
+                description: '7-day perfect hydration streak',
+                requirement: 'Meet your daily goal for 7 consecutive days',
+                reward: 'New bottle themes',
+                progress: 0
+            },
+            {
+                id: 'master',
+                name: 'Hydration Master',
+                icon: '💫',
+                description: '30-day perfect hydration streak',
+                requirement: 'Meet your daily goal for 30 consecutive days',
+                reward: 'Golden bottle theme',
+                progress: 0
+            },
+            {
+                id: 'ocean',
+                name: 'Ocean Guardian',
+                icon: '🌊',
+                description: 'Save 100 plastic bottles worth of water',
+                requirement: 'Track at least 50 liters of water (approx. 100 bottles)',
+                reward: 'Special effects unlock',
+                progress: 0
+            },
+            {
+                id: 'consistency',
+                name: 'Consistency King',
+                icon: '👑',
+                description: 'Drink water at regular intervals',
+                requirement: 'Log water at least 5 times a day for 10 days',
+                reward: 'Premium stats access',
+                progress: 0
+            },
+            {
+                id: 'morning',
+                name: 'Morning Freshness',
+                icon: '🌅',
+                description: 'Start your day hydrated',
+                requirement: 'Log water within 30 minutes of waking up for 15 days',
+                reward: 'Morning routine tips',
+                progress: 0
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply theme settings
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const highContrast = localStorage.getItem('highContrast') === 'true';
+            
+            if (highContrast) {
+                document.body.classList.add('high-contrast');
+            } else if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            // Load milestone progress
+            loadMilestones();
+            
+            // Logout confirmation
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('logout-confirm').style.display = 'block';
+            });
+            
+            document.getElementById('cancel-logout').addEventListener('click', () => {
+                document.getElementById('logout-confirm').style.display = 'none';
+            });
+            
+            document.getElementById('confirm-logout').addEventListener('click', () => {
+                window.location.href = 'HomeScreen.html';
+            });
+        });
+
+        function loadMilestones() {
+            const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+            const goal = parseInt(localStorage.getItem('waterGoal')) || 2000;
+            
+            if (history.length === 0) {
+                displayMilestones(milestones);
+                return;
+            }
+            
+            // Calculate milestone progress
+            updateMilestoneProgress(history, goal);
+        }
+
+        function updateMilestoneProgress(history, goal) {
+            const updatedMilestones = [...milestones];
+            
+            // Group history by day
+            const dailyTotals = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                dailyTotals[date] = (dailyTotals[date] || 0) + entry.amount;
+            });
+            
+            // Sort dates chronologically
+            const sortedDates = Object.keys(dailyTotals).sort((a, b) => new Date(a) - new Date(b));
+            
+            // Calculate total intake
+            const totalIntake = Object.values(dailyTotals).reduce((sum, total) => sum + total, 0);
+            
+            // Check for Rookie milestone (1000ml in a day)
+            const hasAnyDayOver1000 = Object.values(dailyTotals).some(total => total >= 1000);
+            const maxDailyIntake = Math.max(...Object.values(dailyTotals), 0);
+            updatedMilestones[0].progress = hasAnyDayOver1000 ? 100 : Math.min(100, Math.round((maxDailyIntake / 1000) * 100));
+            
+            // Calculate streaks for Week Warrior and Hydration Master
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let tempStreak = 0;
+            
+            // Process streak calculation more accurately
+            for (let i = 0; i < sortedDates.length; i++) {
+                const dateStr = sortedDates[i];
+                const currDate = new Date(dateStr);
+                const dailyAmount = dailyTotals[dateStr];
+                
+                if (dailyAmount >= goal) {
+                    // First date or checking for consecutive days
+                    if (tempStreak === 0 || i === 0) {
+                        tempStreak = 1;
+                    } else {
+                        const prevDate = new Date(sortedDates[i-1]);
+                        const dayDiff = Math.round((currDate - prevDate) / (1000 * 60 * 60 * 24));
+                        
+                        if (dayDiff === 1) {
+                            // Consecutive day
+                            tempStreak++;
+                        } else {
+                            // Not consecutive, reset streak
+                            tempStreak = 1;
+                        }
+                    }
+                    
+                    // Update longest streak whenever we have a new highest
+                    longestStreak = Math.max(longestStreak, tempStreak);
+                } else {
+                    tempStreak = 0;
+                }
+            }
+            
+            // Check if we're currently on a streak by looking at the last date
+            if (sortedDates.length > 0) {
+                const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+                const today = new Date();
+                const dayDiff = Math.floor((today - lastDate) / (1000 * 60 * 60 * 24));
+                
+                if (dayDiff <= 1 && dailyTotals[sortedDates[sortedDates.length - 1]] >= goal) {
+                    currentStreak = tempStreak;
+                } else {
+                    currentStreak = 0;
+                }
+            }
+            
+            // Update Week Warrior progress (7-day streak)
+            updatedMilestones[1].progress = Math.min(100, Math.round((longestStreak / 7) * 100));
+            
+            // Update Hydration Master progress (30-day streak)
+            updatedMilestones[2].progress = Math.min(100, Math.round((longestStreak / 30) * 100));
+            
+            // Update Ocean Guardian progress (50 liters = 50,000 ml)
+            updatedMilestones[3].progress = Math.min(100, Math.round((totalIntake / 50000) * 100));
+            
+            // Calculate consistency (5 entries/day)
+            const entriesPerDay = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                entriesPerDay[date] = (entriesPerDay[date] || 0) + 1;
+            });
+            
+            const consistentDays = Object.values(entriesPerDay).filter(count => count >= 5).length;
+            updatedMilestones[4].progress = Math.min(100, Math.round((consistentDays / 10) * 100));
+            
+            // Check for early morning entries (before 8 AM)
+            const earlyMorningDays = new Set();
+            history.forEach(entry => {
+                const entryDate = new Date(entry.timestamp);
+                const date = entryDate.toDateString();
+                if (entryDate.getHours() < 8) {
+                    earlyMorningDays.add(date);
+                }
+            });
+            
+            updatedMilestones[5].progress = Math.min(100, Math.round((earlyMorningDays.size / 15) * 100));
+            
+            // Also create an object to store unlocked milestones in localStorage for profile page
+            const unlockedMilestones = [];
+            updatedMilestones.forEach(milestone => {
+                if (milestone.progress >= 100) {
+                    unlockedMilestones.push(milestone.id);
+                }
+            });
+            
+            // Save unlocked milestones to localStorage
+            localStorage.setItem('unlockedMilestones', JSON.stringify(unlockedMilestones));
+            
+            // Display updated milestones
+            displayMilestones(updatedMilestones);
+        }
+
+        function displayMilestones(milestones) {
+            const container = document.getElementById('milestone-grid');
+            container.innerHTML = '';
+            
+            milestones.forEach(milestone => {
+                const isLocked = milestone.progress < 100;
+                const card = document.createElement('div');
+                card.className = `milestone-card ${isLocked ? 'milestone-locked' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="milestone-icon">${milestone.icon}</div>
+                    <h3>${milestone.name}</h3>
+                    <p>${milestone.description}</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${milestone.progress}%"></div>
+                    </div>
+                    <p>Reward: ${milestone.reward}</p>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

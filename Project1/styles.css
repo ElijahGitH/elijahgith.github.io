@@ -1,0 +1,24 @@
+body {
+    background: linear-gradient(to bottom, #A1DFF5, #4CAF50);
+    color: #333;
+}
+
+button {
+    background-color: #111111;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    transform: scale(1.05);
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+input {
+    padding: 5px;
+}

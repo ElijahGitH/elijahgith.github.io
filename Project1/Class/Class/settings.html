@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Quench</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- jsPDF for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --highlight-color: #0099ff;
+            --button-color: #0099ff;
+            --button-text: #ffffff;
+            --toggle-bg: #cccccc;
+            --toggle-active: #66cc66;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --highlight-color: #4da6ff;
+            --button-color: #0077cc;
+            --button-text: #ffffff;
+            --toggle-bg: #555555;
+            --toggle-active: #339933;
+        }
+
+        .high-contrast {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+            --highlight-color: #ffff00;
+            --button-color: #ffffff;
+            --button-text: #000000;
+            --toggle-bg: #333333;
+            --toggle-active: #ffff00;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+
+        .dark-mode nav, .high-contrast nav {
+            background: #000000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a, .nav-links button {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+
+        .high-contrast .nav-links a {
+            color: var(--highlight-color);
+            border: 1px solid var(--highlight-color);
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .settings-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .settings-card {
+            border: 2px solid var(--border-color);
+        }
+
+        .toggle {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .toggle label {
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--toggle-bg);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--toggle-active);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .interval-select, .goal-input {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            width: 200px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .high-contrast .interval-select, 
+        .high-contrast .goal-input {
+            border: 2px solid var(--border-color);
+        }
+
+        button {
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .high-contrast button {
+            border: 2px solid var(--highlight-color);
+        }
+
+        .notification-settings {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Hydration Calculator Styles */
+        .calculator-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group input, 
+        .form-group select {
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .high-contrast .form-group input,
+        .high-contrast .form-group select {
+            border: 2px solid var(--border-color);
+        }
+
+        .calculate-btn {
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .result-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            border: 1px solid var(--highlight-color);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--highlight-color);
+            margin: 1rem 0;
+        }
+
+        .result-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .set-goal-btn {
+            background: var(--highlight-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Export Buttons Styles */
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .export-btn {
+            flex: 1;
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            max-width: 200px;
+        }
+
+        .high-contrast .export-btn {
+            border: 2px solid var(--highlight-color);
+        }
+
+        /* Demo mode notification */
+        .demo-mode {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 243, 205, 0.8);
+            border-radius: 5px;
+            color: #856404;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .dark-mode .demo-mode,
+        .high-contrast .demo-mode {
+            background-color: rgba(255, 243, 205, 0.2);
+            color: #ffc107;
+        }
+
+        /* Logout confirmation */
+        .logout-confirm {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .logout-confirm p {
+            margin-top: 0;
+        }
+
+        .logout-confirm .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-confirm button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-confirm .confirm {
+            background: #ff4444;
+            color: white;
+            border: none;
+        }
+
+        .logout-confirm .cancel {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .logout-confirm .confirm {
+            background: var(--highlight-color);
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+        
+        /* Water notification styles */
+        .water-notification {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-width: 300px;
+            border: 1px solid var(--highlight-color);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestone.html">Milestones</a>
+                <a href="facts.html">Fun Facts</a>
+                <a href="profile.html">Profile</a>
+                <a href="settings.html" class="active">Settings</a>
+                <a href="history.html">History</a>
+                <a href="#" id="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="settings-container">
+        <div class="settings-card">
+            <h2>Daily Goal</h2>
+            <input type="number" id="dailyGoal" class="goal-input" value="2000" min="0" step="50">
+            <button onclick="updateGoal()">Update Goal</button>
+        </div>
+
+        <div class="settings-card">
+            <h2>Notifications</h2>
+            <div class="toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="notificationToggle" checked>
+                    <span class="slider"></span>
+                </label>
+                <label for="notificationToggle">Enable Notifications</label>
+            </div>
+            <select id="reminderInterval" class="interval-select">
+                <option value="0.5">Every 30 seconds (Demo)</option>
+                <option value="30">Every 30 minutes</option>
+                <option value="60">Every hour</option>
+                <option value="120">Every 2 hours</option>
+                <option value="180">Every 3 hours</option>
+                <option value="240">Every 4 hours</option>
+            </select>
+            <div id="demo-notification" class="demo-mode">
+                <i class="fas fa-info-circle"></i> 30-second interval is for demonstration purposes only
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>Appearance</h2>
+            <div class="toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+                <label for="darkModeToggle">Dark Mode</label>
+            </div>
+            
+            <div class="toggle">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="highContrastToggle">
+                    <span class="slider"></span>
+                </label>
+                <label for="highContrastToggle">High Contrast Mode</label>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>Hydration Calculator</h2>
+            <p>Get a personalized daily water intake recommendation</p>
+            
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" id="weight" min="20" max="300" step="0.1" placeholder="Enter your weight">
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity">Activity Level</label>
+                    <select id="activity">
+                        <option value="1.2">Sedentary (little or no exercise)</option>
+                        <option value="1.375">Lightly active (light exercise 1-3 days/week)</option>
+                        <option value="1.55" selected>Moderately active (moderate exercise 3-5 days/week)</option>
+                        <option value="1.725">Very active (hard exercise 6-7 days/week)</option>
+                        <option value="1.9">Extra active (very hard exercise & physical job)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="climate">Climate</label>
+                    <select id="climate">
+                        <option value="1">Cool climate</option>
+                        <option value="1.1" selected>Moderate climate</option>
+                        <option value="1.2">Hot climate</option>
+                    </select>
+                </div>
+                
+                <button id="calculate-hydration" class="calculate-btn">Calculate Recommended Intake</button>
+            </div>
+            
+            <div id="hydration-result" class="result-container" style="display: none;">
+                <h3>Your Recommended Daily Water Intake</h3>
+                <div class="result-value"><span id="recommended-ml">0</span> ml</div>
+                <p class="result-note">This is a general recommendation. Consult a healthcare professional for personalized advice.</p>
+                <button id="set-as-goal" class="set-goal-btn">Set as My Daily Goal</button>
+            </div>
+        </div>
+
+        <div class="settings-card">
+            <h2>Export Your Data</h2>
+            <p>Download your hydration history for your records</p>
+            <div class="export-buttons">
+                <button id="export-csv" class="export-btn">
+                    <i class="fas fa-file-csv"></i> Export as CSV
+                </button>
+                <button id="export-pdf" class="export-btn">
+                    <i class="fas fa-file-pdf"></i> Export as PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation -->
+    <div class="logout-confirm" id="logout-confirm">
+        <p>Are you sure you want to logout?</p>
+        <div class="buttons">
+            <button class="cancel" id="cancel-logout">Cancel</button>
+            <button class="confirm" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Apply theme modes based on saved preference
+        function applyThemeMode() {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const highContrast = localStorage.getItem('highContrast') === 'true';
+            
+            document.body.classList.remove('dark-mode', 'high-contrast');
+            
+            if (highContrast) {
+                document.body.classList.add('high-contrast');
+            } else if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Call this function when the page loads
+        applyThemeMode();
+
+        function updateGoal() {
+            const newGoal = document.getElementById('dailyGoal').value;
+            localStorage.setItem('waterGoal', newGoal);
+            alert('Daily goal updated!');
+        }
+
+        document.getElementById('darkModeToggle').addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            localStorage.setItem('darkMode', isChecked);
+            
+            // If turning on dark mode, turn off high contrast mode
+            if (isChecked) {
+                document.getElementById('highContrastToggle').checked = false;
+                localStorage.setItem('highContrast', false);
+            }
+            
+            applyThemeMode();
+        });
+
+        document.getElementById('highContrastToggle').addEventListener('change', (e) => {
+            const isChecked = e.target.checked;
+            localStorage.setItem('highContrast', isChecked);
+            
+            // If turning on high contrast, turn off dark mode
+            if (isChecked) {
+                document.getElementById('darkModeToggle').checked = false;
+                localStorage.setItem('darkMode', false);
+            }
+            
+            applyThemeMode();
+        });
+
+        // Logout confirmation
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('logout-confirm').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-logout').addEventListener('click', () => {
+            document.getElementById('logout-confirm').style.display = 'none';
+        });
+        
+        document.getElementById('confirm-logout').addEventListener('click', () => {
+            window.location.href = 'HomeScreen.html';
+        });
+
+        // Hydration Calculator
+        function calculateHydration() {
+            // Get input values
+            const weight = parseFloat(document.getElementById('weight').value);
+            const activityFactor = parseFloat(document.getElementById('activity').value);
+            const climateFactor = parseFloat(document.getElementById('climate').value);
+            
+            // Validate input
+            if (!weight || isNaN(weight) || weight < 20 || weight > 300) {
+                alert('Please enter a valid weight between 20 and 300 kg.');
+                return;
+            }
+            
+            // Calculate base water recommendation (ml)
+            // A common formula is 30-35ml per kg of body weight
+            const baseRecommendation = weight * 30;
+            
+            // Adjust for activity level and climate
+            const adjustedRecommendation = Math.round(baseRecommendation * activityFactor * climateFactor);
+            
+            // Display result
+            document.getElementById('recommended-ml').textContent = adjustedRecommendation;
+            document.getElementById('hydration-result').style.display = 'block';
+            
+            // Scroll to result
+            document.getElementById('hydration-result').scrollIntoView({ behavior: 'smooth' });
+            
+            return adjustedRecommendation;
+        }
+
+        // Function to set the calculated value as daily goal
+        function setAsGoal() {
+            const recommendedAmount = document.getElementById('recommended-ml').textContent;
+            if (recommendedAmount && parseInt(recommendedAmount) > 0) {
+                localStorage.setItem('waterGoal', recommendedAmount);
+                document.getElementById('dailyGoal').value = recommendedAmount;
+                alert(`Your daily goal has been updated to ${recommendedAmount} ml!`);
+            }
+        }
+
+        document.getElementById('calculate-hydration').addEventListener('click', calculateHydration);
+        document.getElementById('set-as-goal').addEventListener('click', setAsGoal);
+        
+        // Pre-fill weight if stored previously
+        const savedWeight = localStorage.getItem('userWeight');
+        if (savedWeight) {
+            document.getElementById('weight').value = savedWeight;
+        }
+        
+        // Save weight when it changes
+        document.getElementById('weight').addEventListener('change', (e) => {
+            localStorage.setItem('userWeight', e.target.value);
+        });
+
+        // Export to CSV function
+        function exportToCSV() {
+            // Get the history data
+            const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+            
+            if (history.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            
+            // Group by day for better organization
+            const dailyData = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                if (!dailyData[date]) {
+                    dailyData[date] = {
+                        entries: [],
+                        totalAmount: 0
+                    };
+                }
+                dailyData[date].entries.push(entry);
+                dailyData[date].totalAmount += entry.amount;
+            });
+            
+            // Prepare CSV content
+            let csvContent = "Date,Time,Amount (ml)\n";
+            
+            // Add each entry
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp);
+                const dateStr = date.toLocaleDateString();
+                const timeStr = date.toLocaleTimeString();
+                csvContent += `${dateStr},${timeStr},${entry.amount}\n`;
+            });
+            
+            // Add daily summary
+            csvContent += "\nDaily Summary\n";
+            csvContent += "Date,Total Amount (ml),Number of Drinks\n";
+            
+            Object.entries(dailyData).forEach(([date, data]) => {
+                const formattedDate = new Date(date).toLocaleDateString();
+                csvContent += `${formattedDate},${data.totalAmount},${data.entries.length}\n`;
+            });
+            
+            // Create and download the file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'hydration_history.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Export to PDF function
+        function exportToPDF() {
+            // Check if jsPDF is loaded
+            if (typeof jspdf === 'undefined') {
+                alert('PDF export requires jsPDF library which seems to be missing. Please try again or use CSV export instead.');
+                return;
+            }
+            
+            // Get the history data
+            const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+            
+            if (history.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            
+            // Group by day for better organization
+            const dailyData = {};
+            history.forEach(entry => {
+                const date = new Date(entry.timestamp).toDateString();
+                if (!dailyData[date]) {
+                    dailyData[date] = {
+                        entries: [],
+                        totalAmount: 0
+                    };
+                }
+                dailyData[date].entries.push(entry);
+                dailyData[date].totalAmount += entry.amount;
+            });
+            
+            // Create a new PDF document
+            const { jsPDF } = jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Hydration History Report', 105, 15, { align: 'center' });
+            
+            // Add generation date
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 22, { align: 'center' });
+            
+            // Add daily summary table
+            doc.setFontSize(16);
+            doc.text('Daily Summary', 14, 35);
+            
+            const dailySummaryData = Object.entries(dailyData).map(([date, data]) => {
+                return [
+                    new Date(date).toLocaleDateString(),
+                    `${data.totalAmount} ml`,
+                    data.entries.length,
+                    `${Math.round((data.totalAmount / parseInt(localStorage.getItem('waterGoal') || 2000)) * 100)}%`
+                ];
+            });
+            
+            doc.autoTable({
+                startY: 40,
+                head: [['Date', 'Total Amount', 'Drinks', 'Goal Completion']],
+                body: dailySummaryData,
+            });
+            
+            // Add detailed log on the next page
+            doc.addPage();
+            doc.setFontSize(16);
+            doc.text('Detailed Hydration Log', 14, 15);
+            
+            const detailedData = history.map(entry => {
+                const date = new Date(entry.timestamp);
+                return [
+                    date.toLocaleDateString(),
+                    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    `${entry.amount} ml`
+                ];
+            });
+            
+            doc.autoTable({
+                startY: 20,
+                head: [['Date', 'Time', 'Amount']],
+                body: detailedData,
+            });
+            
+            // Save the PDF
+            doc.save('hydration_history.pdf');
+        }
+
+        document.getElementById('export-csv').addEventListener('click', exportToCSV);
+        document.getElementById('export-pdf').addEventListener('click', exportToPDF);
+
+        // Notification System
+        // Global variable to store the notification timer
+        let notificationTimer = null;
+        
+        // Show a notification with a motivational message
+        function showWaterReminderNotification() {
+            // Remove any existing notifications first
+            const existingNotifications = document.querySelectorAll('.water-notification');
+            existingNotifications.forEach(notif => {
+                document.body.removeChild(notif);
+            });
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'water-notification';
+            
+            // Get current goal from localStorage
+            const goal = localStorage.getItem('waterGoal') || '2000';
+            
+            // Add content
+            notification.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <strong>Water Reminder</strong>
+                    <span id="close-notif" style="cursor: pointer;">&times;</span>
+                </div>
+                <p style="margin: 0; font-size: 14px;">Keep tracking your water to reach your ${goal}ml goal!</p>
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Add close handler
+            notification.querySelector('#close-notif').addEventListener('click', function() {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            });
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        // Start notification timer
+        function startNotificationTimer() {
+            // Clear any existing timer first
+            stopNotificationTimer();
+            
+            // Get the interval in minutes and convert to milliseconds
+            const intervalMinutes = parseFloat(document.getElementById('reminderInterval').value);
+            const intervalMs = intervalMinutes * 60 * 1000;
+            
+            // Show a notification immediately
+            showWaterReminderNotification();
+            
+            // Start a new timer
+            notificationTimer = setInterval(() => {
+                showWaterReminderNotification();
+            }, intervalMs);
+            
+            console.log(`Notification timer started: every ${intervalMinutes} minutes (${intervalMs}ms)`);
+        }
+
+        // Stop notification timer
+        function stopNotificationTimer() {
+            if (notificationTimer) {
+                clearInterval(notificationTimer);
+                notificationTimer = null;
+                console.log('Notification timer stopped');
+            }
+        }
+
+        // Handle notification toggle
+        document.getElementById('notificationToggle').addEventListener('change', function(e) {
+            const isChecked = e.target.checked;
+            localStorage.setItem('notifications', isChecked);
+            
+            // Enable or disable interval dropdown
+            document.getElementById('reminderInterval').disabled = !isChecked;
+            
+            // Start or stop notification timer
+            if (isChecked) {
+                startNotificationTimer();
+            } else {
+                stopNotificationTimer();
+            }
+        });
+
+// Handle interval changes
+document.getElementById('reminderInterval').addEventListener('change', function(e) {
+    const value = e.target.value;
+    localStorage.setItem('reminderInterval', value);
+    
+    // Show demo notification message if 30 seconds is selected
+    if (value === '0.5') {
+        document.getElementById('demo-notification').style.display = 'block';
+    } else {
+        document.getElementById('demo-notification').style.display = 'none';
+    }
+    
+    // Restart notification timer with new interval if enabled
+    if (document.getElementById('notificationToggle').checked) {
+        stopNotificationTimer();
+        startNotificationTimer();
+    }
+});
+
+// Initialize everything on page load
+window.addEventListener('load', () => {
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const highContrast = localStorage.getItem('highContrast') === 'true';
+    const notifications = localStorage.getItem('notifications') === 'true';
+    const interval = localStorage.getItem('reminderInterval');
+    const goal = localStorage.getItem('waterGoal');
+
+    document.getElementById('darkModeToggle').checked = darkMode;
+    document.getElementById('highContrastToggle').checked = highContrast;
+    document.getElementById('notificationToggle').checked = notifications;
+    
+    // Disable interval selection if notifications are off
+    document.getElementById('reminderInterval').disabled = !notifications;
+    
+    if(interval) document.getElementById('reminderInterval').value = interval;
+    if(goal) document.getElementById('dailyGoal').value = goal;
+    
+    // Show demo note if 30-second interval is selected
+    if (interval === '0.5') {
+        document.getElementById('demo-notification').style.display = 'block';
+    }
+    
+    // Start notification timer if enabled
+    if (notifications) {
+        startNotificationTimer();
+    }
+});
+    </script>
+</body>
+</html>

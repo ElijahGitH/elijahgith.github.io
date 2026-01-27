@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Tracker Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Dark mode and High Contrast mode variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --highlight-color: #0099ff;
+            --button-color: #0099ff;
+            --button-text: #ffffff;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --highlight-color: #4da6ff;
+            --button-color: #0077cc;
+            --button-text: #ffffff;
+        }
+
+        .high-contrast {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+            --highlight-color: #ffff00;
+            --button-color: #ffffff;
+            --button-text: #000000;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+
+        .dark-mode nav, .high-contrast nav {
+            background: #000000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+
+        .high-contrast .nav-links a {
+            color: var(--highlight-color);
+            border: 1px solid var(--highlight-color);
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .left-column, .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tracking-card, .stats-card, .history-card, .favorites-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .tracking-card, 
+        .high-contrast .stats-card, 
+        .high-contrast .history-card,
+        .high-contrast .favorites-card {
+            border: 2px solid var(--border-color);
+        }
+
+        .water-bottle {
+            height: 300px;
+            width: 100px;
+            border: 3px solid var(--highlight-color);
+            border-radius: 0 0 30px 30px;
+            margin: 1rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .water-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #99ccff, #66b3ff);
+            transition: height 0.3s ease;
+            height: 0%;
+        }
+
+        .high-contrast .water-fill {
+            background: var(--highlight-color);
+        }
+
+        .quick-add {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .quick-btn {
+            flex: 1;
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .custom-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .custom-input input {
+            flex: 1;
+            padding: 0.5rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .add-btn {
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .high-contrast .add-btn, 
+        .high-contrast .quick-btn {
+            border: 2px solid var(--highlight-color);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .stat-item i {
+            font-size: 1.5rem;
+            color: var(--highlight-color);
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Favorites section styles */
+        .favorites-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .favorite-btn {
+            display: flex;
+            align-items: center;
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .favorite-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .add-favorite {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .add-favorite input {
+            flex: 2;
+            padding: 0.5rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .add-favorite button {
+            flex: 1;
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Goal completion popup */
+        .goal-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            border: 2px solid var(--highlight-color);
+            border-radius: 10px;
+            padding: 2rem;
+            z-index: 100;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .goal-popup h2 {
+            color: var(--highlight-color);
+            margin-top: 0;
+        }
+
+        .goal-popup button {
+            background: var(--button-color);
+            color: var(--button-text);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 90;
+            display: none;
+        }
+
+        /* Logout confirmation */
+        .logout-confirm {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-confirm p {
+            margin-top: 0;
+        }
+
+        .logout-confirm .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-confirm button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-confirm .confirm {
+            background: #ff4444;
+            color: white;
+            border: none;
+        }
+
+        .logout-confirm .cancel {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .logout-confirm .confirm {
+            background: var(--highlight-color);
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+
+        .reset-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .high-contrast .reset-btn {
+            background: #ff0000;
+            color: #ffffff;
+            border: 2px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html" class="active">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestone.html">Milestones</a>
+                <a href="facts.html">Fun Facts</a>
+                <a href="profile.html">Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="history.html">History</a>
+                <a href="#" id="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="left-column">
+                <div class="tracking-card">
+                    <h2>Daily Progress</h2>
+                    <div class="water-bottle">
+                        <div class="water-fill" id="progress-fill"></div>
+                    </div>
+                    <p id="progress" class="progress-text">0 / 2000 ml</p>
+                    
+                    <div class="quick-add">
+                        <button class="quick-btn">
+                            <i class="fas fa-tint"></i>250ml
+                        </button>
+                        <button class="quick-btn">
+                            <i class="fas fa-tint"></i>500ml
+                        </button>
+                        <button class="quick-btn">
+                            <i class="fas fa-tint"></i>750ml
+                        </button>
+                    </div>
+
+                    <div class="custom-input">
+                        <input type="number" id="water" value="250" min="0" step="50">
+                        <button class="add-btn">Add Custom Amount</button>
+                    </div>
+                </div>
+                
+                <div class="favorites-card">
+                    <h2>Favorite Drinks</h2>
+                    <div id="favorites-list" class="favorites-list">
+                        <!-- Favorites will be added here dynamically -->
+                    </div>
+                    <div class="add-favorite">
+                        <input type="text" id="favorite-name" placeholder="Drink name">
+                        <input type="number" id="favorite-amount" placeholder="ml" min="0" step="50" value="250">
+                        <button id="add-favorite-btn">Add</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="stats-card">
+                    <h2>Today's Stats</h2>
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <p>Last Drink</p>
+                            <h3 id="lastDrink">2 hrs ago</h3>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-trophy"></i>
+                            <p>Goal Progress</p>
+                            <h3 id="goalProgress">0%</h3>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <p>Streak</p>
+                            <h3 id="currentStreak">0 days</h3>
+                        </div>
+                    </div>
+                    <button class="reset-btn" id="reset-btn">
+                        <i class="fas fa-redo"></i> Reset Progress
+                    </button>
+                </div>
+
+                <div class="history-card">
+                    <h2>Today's Log</h2>
+                    <div id="history" class="history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal completion popup -->
+    <div class="popup-overlay" id="popup-overlay"></div>
+    <div class="goal-popup" id="goal-popup">
+        <i class="fas fa-trophy" style="font-size: 3rem; color: var(--highlight-color);"></i>
+        <h2>Goal Completed!</h2>
+        <p>Congratulations! You've reached your daily hydration goal.</p>
+        <p>Keep up the good work!</p>
+        <button id="close-popup">Continue</button>
+    </div>
+
+    <!-- Logout confirmation -->
+    <div class="logout-confirm" id="logout-confirm">
+        <p>Are you sure you want to logout?</p>
+        <div class="buttons">
+            <button class="cancel" id="cancel-logout">Cancel</button>
+            <button class="confirm" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Initialize state from localStorage
+            let totalWater = parseInt(localStorage.getItem('todayWater') || '0');
+            let goal = parseInt(localStorage.getItem('waterGoal')) || 2000;
+            let goalReached = localStorage.getItem('goalReachedToday') === 'true';
+            let favorites = JSON.parse(localStorage.getItem('favoriteDrinks') || '[]');
+        
+            // Initialize the UI with saved data
+            updateProgress();
+            loadTodayHistory();
+            updateStreak();
+            updateLastDrink();
+            loadFavorites();
+            
+            // Setup automatic daily reset
+            setupDailyReset();
+        
+            // Add reset button event listener
+            document.getElementById('reset-btn').addEventListener('click', () => {
+                if (confirm('Are you sure you want to reset today\'s progress? This cannot be undone.')) {
+                    resetDailyProgress();
+                }
+            });
+            
+            // Add reset favorites button
+            addResetFavoritesButton();
+            
+            // Function to set up automatic daily reset
+            function setupDailyReset() {
+                const checkForNewDay = () => {
+                    const lastDate = localStorage.getItem('lastResetDate');
+                    const today = new Date().toDateString();
+                    
+                    if (lastDate !== today) {
+                        // Reset daily water intake
+                        totalWater = 0;
+                        localStorage.setItem('todayWater', '0');
+                        localStorage.setItem('goalReachedToday', 'false');
+                        goalReached = false;
+                        
+                        // Save today as the last reset date
+                        localStorage.setItem('lastResetDate', today);
+                        
+                        // Update UI
+                        updateProgress();
+                        loadTodayHistory();
+                        updateLastDrink();
+                    }
+                };
+                
+                // Check immediately and then every minute
+                checkForNewDay();
+                setInterval(checkForNewDay, 60000);
+            }
+            
+            // Function to add reset favorites button
+            function addResetFavoritesButton() {
+                const favoritesCard = document.querySelector('.favorites-card');
+                const resetBtn = document.createElement('button');
+                resetBtn.className = 'reset-btn';
+                resetBtn.innerHTML = '<i class="fas fa-trash"></i> Reset Favorites';
+                resetBtn.style.cssText = `
+                    background: #ff4444;
+                    color: white;
+                    border: none;
+                    padding: 0.5rem 1rem;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-top: 1rem;
+                    width: 100%;
+                `;
+                resetBtn.addEventListener('click', resetFavorites);
+                favoritesCard.appendChild(resetBtn);
+            }
+            
+            // Function to reset favorites
+            function resetFavorites() {
+                if (confirm('Are you sure you want to clear all favorite drinks?')) {
+                    favorites = [];
+                    localStorage.setItem('favoriteDrinks', JSON.stringify(favorites));
+                    loadFavorites();
+                }
+            }
+        
+            function resetDailyProgress() {
+                totalWater = 0;
+                localStorage.setItem('todayWater', '0');
+                localStorage.setItem('goalReachedToday', 'false');
+                goalReached = false;
+                
+                // Clear today's entries from history
+                const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+                const today = new Date().toDateString();
+                const filteredHistory = history.filter(entry => 
+                    new Date(entry.timestamp).toDateString() !== today
+                );
+                localStorage.setItem('waterHistory', JSON.stringify(filteredHistory));
+                
+                // Update UI
+                updateProgress();
+                loadTodayHistory();
+                updateStreak();
+                
+                // Reset last drink to 0 hrs ago
+                document.getElementById('lastDrink').textContent = '0 hrs ago';
+            }
+        
+            function updateProgress() {
+                const percentage = Math.min((totalWater / goal) * 100, 100);
+                document.getElementById('progress-fill').style.height = percentage + '%';
+                document.getElementById('progress').textContent = `${totalWater} / ${goal} ml`;
+                document.getElementById('goalProgress').textContent = `${Math.round(percentage)}%`;
+        
+                const fill = document.getElementById('progress-fill');
+                if (percentage < 33) {
+                    fill.style.background = 'linear-gradient(180deg, #ff9999, #ff6666)';
+                } else if (percentage < 66) {
+                    fill.style.background = 'linear-gradient(180deg, #99ccff, #66b3ff)';
+                } else {
+                    fill.style.background = 'linear-gradient(180deg, #99ff99, #66cc66)';
+                }
+        
+                // Check if goal reached but not yet celebrated
+                if (totalWater >= goal && !goalReached) {
+                    showGoalPopup();
+                    localStorage.setItem('goalReachedToday', 'true');
+                    goalReached = true;
+                }
+        
+                // Save current total
+                localStorage.setItem('todayWater', totalWater.toString());
+            }
+        
+            function addWater(amount) {
+                totalWater += amount;
+                updateProgress();
+                addHistoryItem(amount);
+                updateStreak();
+                saveToHistory(amount);
+                updateLastDrink();
+            }
+        
+            function addHistoryItem(amount) {
+                const now = new Date();
+                const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <span class="time">${time}</span>
+                    <span class="amount">${amount}ml</span>
+                `;
+        
+                const historyList = document.getElementById('history');
+                historyList.insertBefore(historyItem, historyList.firstChild);
+        
+                const lastDrink = document.getElementById('lastDrink');
+                if (lastDrink) lastDrink.textContent = 'Just now';
+            }
+        
+            function saveToHistory(amount) {
+                const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+                history.push({
+                    amount: amount,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('waterHistory', JSON.stringify(history));
+            }
+        
+            function loadTodayHistory() {
+                const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+                const today = new Date().toDateString();
+                const todayEntries = history.filter(entry => 
+                    new Date(entry.timestamp).toDateString() === today
+                );
+        
+                const historyList = document.getElementById('history');
+                historyList.innerHTML = '';
+                todayEntries.reverse().forEach(entry => {
+                    const time = new Date(entry.timestamp).toLocaleTimeString([], { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                    });
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <span class="time">${time}</span>
+                        <span class="amount">${entry.amount}ml</span>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            }
+        
+            function updateStreak() {
+                const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+                let streak = 0;
+                const dailyTotals = {};
+        
+                history.forEach(entry => {
+                    const date = new Date(entry.timestamp).toDateString();
+                    dailyTotals[date] = (dailyTotals[date] || 0) + entry.amount;
+                });
+        
+                let currentDate = new Date();
+                while (dailyTotals[currentDate.toDateString()] >= goal) {
+                    streak++;
+                    currentDate.setDate(currentDate.getDate() - 1);
+                }
+        
+                document.getElementById('currentStreak').textContent = `${streak} days`;
+            }
+        
+            function updateLastDrink() {
+                const history = JSON.parse(localStorage.getItem('waterHistory') || '[]');
+                const lastDrink = document.getElementById('lastDrink');
+                
+                if (history.length > 0) {
+                    const lastEntry = new Date(history[history.length - 1].timestamp);
+                    const now = new Date();
+                    const diffMinutes = Math.floor((now - lastEntry) / 60000);
+                    
+                    if (diffMinutes < 1) {
+                        lastDrink.textContent = 'Just now';
+                    } else if (diffMinutes < 60) {
+                        lastDrink.textContent = `${diffMinutes} min ago`;
+                    } else {
+                        const hours = Math.floor(diffMinutes / 60);
+                        lastDrink.textContent = `${hours} hr${hours > 1 ? 's' : ''} ago`;
+                    }
+                } else {
+                    lastDrink.textContent = '0 hrs ago';
+                }
+            }
+
+            // Favorite drinks functions
+            function loadFavorites() {
+                const favoritesList = document.getElementById('favorites-list');
+                favoritesList.innerHTML = '';
+                
+                favorites.forEach((favorite, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'favorite-btn';
+                    btn.innerHTML = `
+                        <i class="${getFavoriteIcon(favorite.name)}"></i>
+                        ${favorite.name} (${favorite.amount}ml)
+                    `;
+                    btn.addEventListener('click', () => addWater(favorite.amount));
+                    
+                    // Add remove option on long press or right click
+                    btn.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        if (confirm(`Remove ${favorite.name} from favorites?`)) {
+                            favorites.splice(index, 1);
+                            localStorage.setItem('favoriteDrinks', JSON.stringify(favorites));
+                            loadFavorites();
+                        }
+                    });
+                    
+                    favoritesList.appendChild(btn);
+                });
+            }
+            
+            function getFavoriteIcon(name) {
+                const lowerName = name.toLowerCase();
+                if (lowerName.includes('water')) return 'fas fa-tint';
+                if (lowerName.includes('coffee')) return 'fas fa-coffee';
+                if (lowerName.includes('tea')) return 'fas fa-mug-hot';
+                if (lowerName.includes('juice')) return 'fas fa-apple-alt';
+                if (lowerName.includes('soda') || lowerName.includes('cola')) return 'fas fa-glass-whiskey';
+                if (lowerName.includes('milk')) return 'fas fa-wine-bottle';
+                return 'fas fa-glass-water';
+            }
+            
+            document.getElementById('add-favorite-btn').addEventListener('click', () => {
+                const name = document.getElementById('favorite-name').value.trim();
+                const amount = parseInt(document.getElementById('favorite-amount').value);
+                
+                if (name && !isNaN(amount) && amount > 0) {
+                    favorites.push({ name, amount });
+                    localStorage.setItem('favoriteDrinks', JSON.stringify(favorites));
+                    
+                    document.getElementById('favorite-name').value = '';
+                    document.getElementById('favorite-amount').value = '250';
+                    
+                    loadFavorites();
+                }
+            });
+
+            // Goal popup functions
+            function showGoalPopup() {
+                document.getElementById('popup-overlay').style.display = 'block';
+                document.getElementById('goal-popup').style.display = 'block';
+                
+                // If notifications are enabled, trigger a notification as well
+                if (localStorage.getItem('notifications') === 'true') {
+                    if ('Notification' in window) {
+                        Notification.requestPermission().then(permission => {
+                            if (permission === 'granted') {
+                                new Notification('Hydration Goal Reached!', {
+                                    body: 'Congratulations! You\'ve reached your daily water intake goal.',
+                                    icon: 'https://example.com/icon.png' // Replace with your app icon
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+            
+            document.getElementById('close-popup').addEventListener('click', () => {
+                document.getElementById('popup-overlay').style.display = 'none';
+                document.getElementById('goal-popup').style.display = 'none';
+            });
+
+            // Logout confirmation
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('logout-confirm').style.display = 'block';
+            });
+            
+            document.getElementById('cancel-logout').addEventListener('click', () => {
+                document.getElementById('logout-confirm').style.display = 'none';
+            });
+            
+            document.getElementById('confirm-logout').addEventListener('click', () => {
+                window.location.href = 'HomeScreen.html';
+            });
+        
+            // Event Listeners for quick-add buttons
+            document.querySelectorAll('.quick-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const amount = parseInt(e.target.textContent.match(/\d+/)[0]);
+                    addWater(amount);
+                });
+            });
+        
+            const addBtn = document.querySelector('.add-btn');
+            if (addBtn) {
+                addBtn.addEventListener('click', () => {
+                    const input = document.getElementById('water');
+                    const amount = parseInt(input.value);
+                    if (!isNaN(amount) && amount > 0) {
+                        addWater(amount);
+                        input.value = '250';
+                    }
+                });
+            }
+        
+            const waterInput = document.getElementById('water');
+            if (waterInput) {
+                waterInput.addEventListener('input', (e) => {
+                    if (e.target.value < 0) e.target.value = 0;
+                });
+            }
+        
+            // Watch for goal changes
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'waterGoal') {
+                    goal = parseInt(e.newValue || '2000');
+                    updateProgress();
+                }
+            });
+        
+            // Handle page visibility changes
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    totalWater = parseInt(localStorage.getItem('todayWater') || '0');
+                    updateProgress();
+                    loadTodayHistory();
+                    updateStreak();
+                    updateLastDrink();
+                }
+            });
+        });
+        
+        // Apply theme settings
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply dark mode or high contrast mode from localStorage
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const highContrast = localStorage.getItem('highContrast') === 'true';
+            
+            if (highContrast) {
+                document.body.classList.add('high-contrast');
+            } else if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>

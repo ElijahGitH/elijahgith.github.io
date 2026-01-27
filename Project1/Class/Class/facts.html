@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Facts - Quench</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Theme variables */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #dddddd;
+            --highlight-color: #0099ff;
+            --button-color: #0099ff;
+            --button-text: #ffffff;
+        }
+        
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #444444;
+            --highlight-color: #4da6ff;
+            --button-color: #0077cc;
+            --button-text: #ffffff;
+        }
+        
+        .high-contrast {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #000000;
+            --border-color: #ffffff;
+            --highlight-color: #ffff00;
+            --button-color: #ffffff;
+            --button-text: #000000;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav {
+            background: linear-gradient(to right, #0066cc, #0099ff);
+            padding: 1rem;
+        }
+
+        .dark-mode nav, .high-contrast nav {
+            background: #000000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 5px 10px;
+        }
+
+        .high-contrast .nav-links a {
+            color: var(--highlight-color);
+            border: 1px solid var(--highlight-color);
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 1rem; 
+        }
+
+        /* Fun Facts specific styles */
+        .fact-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s;
+        }
+        
+        .fact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .high-contrast .fact-card {
+            border: 2px solid var(--border-color);
+            box-shadow: none;
+        }
+        
+        .fact-icon {
+            font-size: 3rem;
+            color: var(--highlight-color);
+            flex-shrink: 0;
+        }
+        
+        .fact-content {
+            flex-grow: 1;
+        }
+        
+        .fact-title {
+            color: var(--highlight-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Logout confirmation */
+        .logout-confirm {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 1rem;
+            display: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+        }
+
+        .logout-confirm p {
+            margin-top: 0;
+        }
+
+        .logout-confirm .buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        .logout-confirm button {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout-confirm .confirm {
+            background: #ff4444;
+            color: white;
+            border: none;
+        }
+
+        .logout-confirm .cancel {
+            background: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .high-contrast .logout-confirm .confirm {
+            background: var(--highlight-color);
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <h1>Quench</h1>
+            <div class="nav-links">
+                <a href="index.html">Dashboard</a>
+                <a href="statistics.html">Statistics</a>
+                <a href="milestone.html">Milestones</a>
+                <a href="facts.html" class="active">Fun Facts</a>
+                <a href="profile.html">Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="history.html">History</a>
+                <a href="#" id="logout-btn">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" id="facts-page">
+        <h1>Hydration Fun Facts</h1>
+        
+        <div class="fact-card">
+            <div class="fact-icon">🧠</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Brain Power Boost</h3>
+                <p>Just 1% dehydration can decrease cognitive performance by up to 5%! Your brain is 73% water and staying hydrated helps maintain memory, focus, and reaction time.</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <div class="fact-icon">💪</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Workout Wonder</h3>
+                <p>Proper hydration can increase physical performance by up to 25%! Water helps maintain blood volume, regulate body temperature, and transport nutrients to your muscles.</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <div class="fact-icon">🌍</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Earth Facts</h3>
+                <p>The adult human body contains about 42 liters of water! That's enough to fill a small fish tank. Despite Earth being 71% water, only 1% is accessible freshwater.</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <div class="fact-icon">⚡</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Energy Boost</h3>
+                <p>Feeling tired? Before reaching for coffee, try water! Fatigue is often one of the first signs of dehydration. Water helps your heart pump blood more efficiently.</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <div class="fact-icon">💦</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Digestion Helper</h3>
+                <p>Water is essential for proper digestion. It helps dissolve nutrients, making them accessible to your body, and helps prevent constipation by keeping your digestive system moving smoothly.</p>
+            </div>
+        </div>
+
+        <div class="fact-card">
+            <div class="fact-icon">✨</div>
+            <div class="fact-content">
+                <h3 class="fact-title">Beauty Secret</h3>
+                <p>Water is nature's best beauty treatment! Proper hydration helps maintain skin elasticity, reduces the appearance of fine lines, and gives your skin a healthy glow.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation -->
+    <div class="logout-confirm" id="logout-confirm">
+        <p>Are you sure you want to logout?</p>
+        <div class="buttons">
+            <button class="cancel" id="cancel-logout">Cancel</button>
+            <button class="confirm" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Logout confirmation
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('logout-confirm').style.display = 'block';
+        });
+        
+        document.getElementById('cancel-logout').addEventListener('click', () => {
+            document.getElementById('logout-confirm').style.display = 'none';
+        });
+        
+        document.getElementById('confirm-logout').addEventListener('click', () => {
+            window.location.href = 'HomeScreen.html';
+        });
+
+        // Apply theme settings
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply dark mode or high contrast mode from localStorage
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const highContrast = localStorage.getItem('highContrast') === 'true';
+            
+            if (highContrast) {
+                document.body.classList.add('high-contrast');
+            } else if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
