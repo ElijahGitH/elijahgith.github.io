@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pizza Form</title>
+</head>
+
+<body>
+
+<form>
+<fieldset>
+
+<p style="font-size: 30px;"><b>Pizza Ordering Form</b></p>
+
+<p style="font-size: 24px;"><b>Contact Information</b></p>
+<label for="inName">Name:</label>
+<input type="text" name="inName" id="inName" required><br>
+
+<label for="inPhone">Phone:</label>
+<input type="text" name="inPhone" id="inPhone" required><br>
+
+<label for="inEmail">Email:</label>
+<input type="email" name="inEmail" id="inEmail" required><br>
+<br>
+
+<p style="font-size: 24px;"><b>Select Pizza Size</b></p>
+<label for="pizzaSize">Pizza size:</label>
+<select id="pizzaSize" name="pizzaSize" required>
+    <option value="" selected disabled>--Select Size--</option>
+    <option value="medium">Medium</option>
+    <option value="large">Large</option>
+    <option value="xlarge">XLarge</option>
+</select>
+
+<p style="font-size: 24px;"><b>Select Sauce</b></p>
+<input type="radio" name="Sauce" value="Marinara" required> Marinara<br>
+<input type="radio" name="Sauce" value="Ranch"> Ranch<br>
+
+<p style="font-size: 24px;"><b>Select Toppings</b></p>
+<input type="checkbox" name="Pepperoni" value="Pepperoni"> Pepperoni
+<input type="checkbox" name="Sausage" value="Sausage"> Sausage<br>
+
+<input type="checkbox" name="Mushroom" value="Mushroom"> Mushroom
+<input type="checkbox" name="Pineapple" value="Pineapple"> Pineapple<br>
+
+<input type="checkbox" name="Peppers" value="Peppers"> Peppers
+<input type="checkbox" name="Onions" value="Onions"> Onions<br>
+
+<p style="font-size: 24px;"><b>Additional Instructions</b></p>
+<textarea name="additionalInstructions" placeholder="Add Instructions"></textarea><br>
+<input type="submit" value="Submit">
+<br><br>
+
+</fieldset>
+</form>
+
+<table border="1">
+    <caption>List of My Favorite Games</caption>
+
+    <thead>
+        <tr>
+            <th>Developer</th>
+            <th>Title</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td rowspan="2">Blizzard Entertainment</td>
+            <td>Overwatch</td>
+            <td>2016</td>
+        </tr>
+        <tr>
+            <td>Diablo III</td>
+            <td>2012</td>
+        </tr>
+        <tr>
+            <td>FromSoftware</td>
+            <td>Elden Ring</td>
+            <td>2022</td>
+        </tr>
+        <tr>
+            <td>Ubisoft</td>
+            <td>Rainbow Six Siege</td>
+            <td>2015</td>
+        </tr>
+        <tr>
+            <td>Hopoo Games</td>
+            <td>Risk of Rain</td>
+            <td>2013</td>
+        </tr>
+        <tr>
+            <td colspan="3">Count: 5</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
