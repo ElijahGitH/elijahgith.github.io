@@ -1,17 +1,74 @@
+/* Elijah Ramos
+   CIS 4004
+   2/3/2026
+*/
+
+ /* Heading */
+h1{
+  font-size: 40px;
+  text-align: center;
+  margin: 20px 0 10px 0;
+}
+h2{
+  font-size: 30px;
+  margin: 10px 0;
+}
+h3{
+  font-size: 23px;
+  margin: 15px 0 10px 0;
+
+}
+/* Light Blue Background */
 body {
   background-color: lightblue;
 }
-
+/* Paragraphs */
 #paragraph2 {
   background-color: white;
   border: 4px solid green;
-  width: 70;
-  padding: 25px 45px;
+  width: 50%;
+  padding: 20px 45px;
+  line-height: 1.56;
+  
 }
 
 .blue{ 
   background-color: darkblue;
   color: white;
-  padding: 18px 22px;
+  padding: 16px 22px;
   border: 2px solid black;
+  margin: 16px 0;
+}
+
+/* Links */
+ol a{
+  color: darkblue; 
+}
+ol {
+  list-style-type: decimal-leading-zero;
+  
+}
+a[href*="w3schools"] {
+  color: darkred;
+}
+/* Table */
+table {
+  
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  border: 2px solid black;
+  padding: 10px;
+}
+/* header background */
+th{
+  background: silver;
+  color: black;
+  text-align: center;
+}
+/* cell background */
+td{
+  background: white;
+  color: black;
 }
