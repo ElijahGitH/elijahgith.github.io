@@ -1,0 +1,116 @@
+/* Elijah Ramos */
+/* CSS Positioning and Layout */
+body{
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: white;
+}
+*{
+    box-sizing: border-box;
+}
+
+/* menu on left */
+#jumpMenu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100vh;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: rgb(201, 156, 44);
+}
+
+#jumpMenu h2{
+    color: black;
+}
+
+#jumpMenu a{
+    color: blue;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* header at the top */
+header{
+    position: fixed;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    text-align: center;
+    padding: 15px 0;
+
+    background-color: red;
+    color: white;
+    border-bottom: 4px solid black;
+}
+
+header p{
+    font-size: 30px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+header nav{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+header nav button{
+    background-color: blue;
+    color: white;
+    border: 2px solid black;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+/* main content */
+main{
+    margin-left: 15%;
+    padding-top: 140px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+main h1{
+    text-align: center;
+    font-size: 48px;
+}
+
+/* articles */
+#container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+article{
+    width: 300px;
+    background-color: white;
+    padding: 15px;
+    border: 2px solid lightgray;
+}
+
+article h2{
+    color: darkred;
+}
+
+article a{
+    color: blue;
+    font-weight: bold;
+}
+
+/* thanks msg */
+#thanks{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    margin: 0;
+    padding: 20px 30px;
+    background-color: lightskyblue;
+    border: 3px solid steelblue;
+    font-size: 32px;
+    font-weight: bold;
+}
