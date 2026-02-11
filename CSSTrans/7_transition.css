@@ -1,0 +1,188 @@
+/* Elijah Ramos */
+/* CSS Transitions and Selectors */
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* header at the top */
+header{
+    position: fixed;
+    top: 0;
+    left: 15%;
+    width: 85%;
+    text-align: center;
+    padding: 18px 0;
+    background-color: red;
+    color: white;
+    border-bottom: 4px solid black;
+    z-index: 10;
+}
+
+header p{
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+/* main content */
+main{
+    margin-left: 15%;
+    padding-top: 120px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+main h1{
+    text-align: center;
+    font-size: 46px;
+    margin-top: 0;
+}
+
+/* menu on left */
+#menuItems{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 15%;
+    height: 100vh;
+    padding: 18px;
+    overflow-y: auto;
+    background-color: goldenrod;
+}
+
+#menuItems button{
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    margin-bottom: 12px;
+
+    background-color: blue;
+    color: white;
+    border: 2px solid black;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* nav button hover */
+#menuItems button:hover{
+    background-color: lightblue;
+    color: black;
+}
+
+/* recent articles list */
+#jumpMenu{
+    display: none;
+    list-style: none;
+    padding: 8px 0;
+    margin: 0 0 12px 0;
+    background-color: goldenrod;
+}
+
+/* show list on hover */
+#recentArticles:hover + #jumpMenu,
+#jumpMenu:hover{
+    display: block;
+}
+
+#jumpMenu a{
+    display: block;
+    text-align: center;
+    padding: 3px 0;
+    color: blue;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* list link hover */
+#jumpMenu a:hover{
+    background-color: blue;
+    color: yellow;
+}
+
+/* articles */
+#container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px;
+}
+
+article{
+    width: 300px;
+    background-color: white;
+    padding: 16px;
+    border: 2px solid lightgray;
+
+    transform: scale(1);
+    transform-origin: center top;
+    transition: transform 2s ease;
+}
+
+/* article text start light */
+article h2,
+article p:first-of-type{
+    color: lightgray;
+    transition: color 2s ease;
+}
+
+/* article hover */
+article:hover{
+    transform: scale(1.08);
+    position: relative;
+    z-index: 2;
+}
+
+article:hover h2,
+article:hover p:first-of-type{
+    color: black;
+}
+
+/* drop cap */
+article p:first-of-type::first-letter{
+    font-family: "Times New Roman", Times, serif;
+    font-size: 36px;
+    line-height: 1;
+}
+
+/* read more link */
+article a{
+    color: blue;
+    font-weight: 700;
+}
+
+/* google link arrow */
+a[href*="google"]::after{
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    vertical-align: text-bottom;
+    background: url("arrowarrow.png") no-repeat center / contain;
+}
+
+/* thanks msg */
+#thanks{
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    margin: 0;
+    padding: 18px 24px;
+    background-color: lightskyblue;
+    border: 3px solid steelblue;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#thanks a{
+    color: blue;
+    text-decoration: underline;
+}
