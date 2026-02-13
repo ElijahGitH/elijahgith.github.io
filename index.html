@@ -1,150 +1,128 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Elijah Ramos - Resume</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <header>
+    <header class="site-header">
       <h1>Elijah Ramos</h1>
-      <address>
+
+      <address class="contact">
         <p>
-          <a href="mailto:el227517@ucf.edu">el227517@ucf.edu</a> |
-          <a href="https://www.linkedin.com/in/elijahramos1">https://www.linkedin.com/in/elijahramos1</a>
+          <a href="mailto:el227517@ucf.edu">el227517@ucf.edu</a>
+          <span class="sep">|</span>
+          <a href="https://www.linkedin.com/in/elijahramos1" target="_blank" rel="noopener noreferrer">
+            linkedin.com/in/elijahramos1
+          </a>
         </p>
       </address>
     </header>
 
-    <main>
-      <section>
-        <h2>Professional Objective Statement</h2>
-        <p>
-          IT student at the University of Central Florida with a summer remote internship at GTG Networks
-          and current experience as a server at Cooper's Hawk Winery in Waterford Lakes.
-        </p>
-      </section>
-
-      <section>
-        <h2>Education</h2>
-        <p>University of Central Florida, Orlando, FL</p>
-        <p>Bachelors of Science, Information Technology, Expected in 05/2026</p>
-        <ul>
-          <li>Dean's List (Spring 2025)</li>
-          <li>Dean's List (Fall 2024)</li>
-          <li>Dean's List (Spring 2023)</li>
-          <li>GPA: 3.6</li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Relevant Work Experience</h2>
-
-        <article>
-          <h3>GTG Networks - Remote IT Intern</h3>
-          <ul>
-            <li>Provided remote help desk support for end users by remoting into desktops and troubleshooting basic technical issues.</li>
-            <li>Walked users through fixes over the phone and documented issues and outcomes.</li>
-            <li>Followed MSP-style workflows, including ticket updates, follow-ups, and escalating more complex problems when needed.</li>
-            <li>Supported a company-wide email migration project from Gmail to Outlook, helping users with setup and configuration.</li>
-          </ul>
-        </article>
-      </section>
-
-      <section>
-        <h2>Projects</h2>
-
-        <article>
-          <h3>Project 1: Hydration Tracker (Humans Interactions Course)</h3>
-
+    <main class="layout">
+      <!-- LEFT COLUMN (main content) -->
+      <section class="maincol">
+        <section id="objective" class="card">
+          <h2>Professional Objective Statement</h2>
           <p>
-            <strong>Project Page:</strong>
-            <a href="Project1/">Open Project 1</a>
+            IT student at the University of Central Florida with a summer remote internship at GTG Networks
+            and current experience as a server at Cooper's Hawk Winery in Waterford Lakes.
           </p>
+        </section>
 
-          <figure aria-label="Hydration tracker illustration">
-            <img src="images/hydration.png" alt="Hydration water bottle illustration">
-            <figcaption>Hydration tracker project (water intake logging).</figcaption>
-          </figure>
-          <!-- Not needede j gonna add it into the page
-          <h4>Description</h4>
-          <p>
-            This hydration tracker was a project for my Humans Interactions course. The goal was to build a simple interface
-            that makes it easy to log water intake and see progress over time.
-          </p>
-
-          <h4>Skills Learned</h4>
+        <section id="education" class="card">
+          <h2>Education</h2>
+          <p><strong>University of Central Florida</strong>, Orlando, FL</p>
+          <p>Bachelors of Science, Information Technology, Expected in 05/2026</p>
           <ul>
-            <li>HTML structure and semantic layout</li>
-            <li>JavaScript fundamentals (functions, events, variables)</li>
-            <li>Linking pages and files together in a multi-file project</li>
-            <li>Building a basic GUI and improving usability</li>
-            <li>Connecting UI actions to logic in an app.js-style script</li>
+            <li>Dean's List (Spring 2025)</li>
+            <li>Dean's List (Fall 2024)</li>
+            <li>Dean's List (Spring 2023)</li>
+            <li>GPA: 3.6</li>
           </ul>
-        </article>
-      -->
+        </section>
 
-        <article>
-          <h3>Project 2: Tic Tac Toe (1v1)</h3>
+        <section id="experience" class="card">
+          <h2>Relevant Work Experience</h2>
 
-          <p>
-            <strong>Project Page:</strong>
-            <a href="Project2/" target="_blank" rel="noopener noreferrer">Open Project 2</a>
-          </p>
+          <article>
+            <h3>GTG Networks - Remote IT Intern</h3>
+            <ul>
+              <li>Provided remote help desk support for end users by remoting into desktops and troubleshooting basic technical issues.</li>
+              <li>Walked users through fixes over the phone and documented issues and outcomes.</li>
+              <li>Followed MSP-style workflows, including ticket updates, follow-ups, and escalating more complex problems when needed.</li>
+              <li>Supported a company-wide email migration project from Gmail to Outlook, helping users with setup and configuration.</li>
+            </ul>
+          </article>
+        </section>
 
-          <figure aria-label="Tic Tac Toe illustration">
-            <img src="images/tictactoe.png" alt="Tic Tac Toe board illustration">
-            <figcaption>Two-player Tic Tac Toe board.</figcaption>
-          </figure>
-          <!--Not needed j gonna add it into page
-          <h4>Description</h4>
-          <p>
-            This was my first small HTML game that I made before school. I built it to practice basic HTML structure and learn
-            how JavaScript can control a simple interactive game (turns, wins, and resets).
-          </p>
+        <section id="projects" class="card">
+          <h2>Projects</h2>
 
-          <h4>Skills Learned</h4>
-          <ul>
-            <li>HTML structure and semantic layout</li>
-            <li>JavaScript logic (arrays, conditions, functions)</li>
-            <li>Event handling (clicks) and updating the page dynamically</li>
-            <li>Implementing game rules (turn-taking, win checks, draws)</li>
-            <li>Testing and debugging in the browser</li>
-          </ul>
-        </article>
-      -->
+          <article class="project">
+            <h3>Project 1: Hydration Tracker (Humans Interactions Course)</h3>
+            <p>
+              <strong>Project Page:</strong>
+              <a href="Project1/">Open Project 1</a>
+            </p>
 
-        <article>
-          <h3>Email Migration Project (Gmail to Outlook) - GTG Networks</h3>
-          <ul>
-            <li>Helped migrate user accounts from Gmail to Outlook during a company-wide email transfer.</li>
-            <li>Maintained an Excel tracking sheet of users and migration status.</li>
-            <li>Contacted users to schedule migration times and supported mailbox setup/configuration.</li>
-            <li>Confirmed successful completion after each migration.</li>
-          </ul>
-        </article>
+            <figure>
+              <img src="images/hydration.png" alt="Hydration water bottle illustration" />
+              <figcaption>Hydration tracker project (water intake logging).</figcaption>
+            </figure>
+          </article>
+
+          <article class="project">
+            <h3>Project 2: Tic Tac Toe (1v1)</h3>
+            <p>
+              <strong>Project Page:</strong>
+              <a href="Project2/" target="_blank" rel="noopener noreferrer">Open Project 2</a>
+            </p>
+
+            <figure>
+              <img src="images/tictactoe.png" alt="Tic Tac Toe board illustration" />
+              <figcaption>Two-player Tic Tac Toe board.</figcaption>
+            </figure>
+          </article>
+
+          <article class="project">
+            <h3>Email Migration Project (Gmail to Outlook) - GTG Networks</h3>
+            <ul>
+              <li>Helped migrate user accounts from Gmail to Outlook during a company-wide email transfer.</li>
+              <li>Maintained an Excel tracking sheet of users and migration status.</li>
+              <li>Contacted users to schedule migration times and supported mailbox setup/configuration.</li>
+              <li>Confirmed successful completion after each migration.</li>
+            </ul>
+          </article>
+        </section>
       </section>
 
-      <section>
-        <h2>Skills</h2>
-        <ul>
-          <li>Remote help desk support and basic troubleshooting</li>
-          <li>Email setup and migrations (Gmail to Outlook)</li>
-          <li>Microsoft Outlook and Microsoft Office</li>
-          <li>Excel tracking and organization</li>
-          <li>Documentation and following support procedures</li>
-          <li>Customer service and communication</li>
-        </ul>
-      </section>
+      <!-- RIGHT COLUMN (sidebar) -->
+      <aside class="sidecol">
+        <section id="skills" class="card">
+          <h2>Skills</h2>
+          <ul>
+            <li>Remote help desk support and basic troubleshooting</li>
+            <li>Email setup and migrations (Gmail to Outlook)</li>
+            <li>Microsoft Outlook and Microsoft Office</li>
+            <li>Excel tracking and organization</li>
+            <li>Documentation and following support procedures</li>
+            <li>Customer service and communication</li>
+          </ul>
+        </section>
 
-      <section>
-        <h2>Certifications</h2>
-        <ul>
-          <li>TestOut IT Fundamentals Pro (12/2024)</li>
-          <li>TestOut CyberDefense Pro (12/2025)</li>
-        </ul>
-      </section>
+        <section id="certifications" class="card">
+          <h2>Certifications</h2>
+          <ul>
+            <li>TestOut IT Fundamentals Pro (12/2024)</li>
+            <li>TestOut CyberDefense Pro (12/2025)</li>
+          </ul>
+        </section>
+      </aside>
     </main>
   </body>
 </html>

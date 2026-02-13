@@ -1,0 +1,168 @@
+
+:root {
+  --bg: black;
+  --page: lavender;
+  --card: white;
+  --text: black;
+  --muted: dimgray;
+
+  --primary: royalblue;
+  --secondary: limegreen;
+  --accent: mediumpurple;
+
+  --border: lightgray;
+  --shadow: 0 10px 25px gray;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* layout */
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+
+    /* had to lookup how to get this background */
+  background:
+    radial-gradient(900px 400px at 20% -10%, royalblue, transparent 60%),
+    radial-gradient(700px 300px at 90% 10%, mediumpurple, transparent 55%),
+    radial-gradient(800px 450px at 50% 120%, limegreen, transparent 60%),
+    var(--page);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.site-header {
+  width: min(1100px, 92%);
+  margin: 18px auto 12px auto;
+  padding: 18px 18px;
+  border-radius: 14px;
+  color: white;
+  background: linear-gradient(135deg, royalblue, mediumpurple);
+  box-shadow: var(--shadow);
+}
+
+.site-header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  letter-spacing: 0.2px;
+}
+
+.contact {
+  font-style: normal;
+}
+
+.contact p {
+  margin: 0;
+  color: white;
+}
+
+.contact a {
+  color: white;
+  font-weight: 700;
+}
+
+.sep {
+  margin: 0 8px;
+  opacity: 0.85;
+}
+
+/* mobile layout */
+.layout {
+  width: min(1100px, 92%);
+  margin: 0 auto 40px auto;
+  display: block;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 16px;
+  margin: 14px 0;
+  box-shadow: 0 8px 18px lightgray;
+}
+
+h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid lightblue;
+}
+
+h3 {
+  margin: 14px 0 8px 0;
+  font-size: 16px;
+  color: black;
+}
+
+p {
+  margin: 8px 0;
+}
+
+ul {
+  margin: 8px 0 0 18px;
+  padding: 0;
+}
+
+li {
+  margin: 6px 0;
+  color: var(--muted);
+}
+
+.project + .project {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed lightblue;
+}
+
+figure {
+  margin: 10px 0 0 0;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  border: 1px solid lightgray;
+}
+
+figcaption {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* desktop layout */
+@media (min-width: 900px) {
+  .layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .maincol .card,
+  .sidecol .card {
+    margin: 0 0 16px 0;
+  }
+
+  .sidecol {
+    position: sticky;
+    top: 16px;
+    align-self: start;
+  }
+}
