@@ -45,7 +45,7 @@ function showOddNumbers() {
 function addMultiplesToArray() {
   var arr = [];
   var i;
-// i had to look up this array push command
+
   for (i = counterValue; i >= 5; i--) {
     if (i % 5 == 0) {
       arr.push(i);
