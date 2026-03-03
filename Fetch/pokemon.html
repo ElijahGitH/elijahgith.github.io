@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokemon Team Builder</title>
+  <link rel="stylesheet" href="ashcatchem.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+
+  <h1>Pokemon Team Builder</h1>
+
+  <div id="box">
+
+    <label for="searchInput">Name or ID</label><br>
+    <input id="searchInput" type="text" />
+    <button id="findBtn" type="button">Find</button>
+
+    <hr>
+
+    <img id="pokeImg" alt="" />
+
+    <br><br>
+
+    <audio id="pokeAudio" controls></audio>
+
+    <br><br>
+
+    <div class="moves">
+      <select id="m1"></select>
+      <select id="m2"></select>
+      <br><br>
+      <select id="m3"></select>
+      <select id="m4"></select>
+    </div>
+
+    <br>
+
+    <button id="addBtn" type="button">Add to Team</button>
+
+    <div id="teamArea"></div>
+
+  </div>
+
+</body>
+</html>
