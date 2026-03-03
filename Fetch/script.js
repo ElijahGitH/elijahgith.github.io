@@ -1,96 +1,126 @@
-let currentPokemon = null;
-let team = [];
+let selected_pokemon = null;
+let team_list = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("findBtn").addEventListener("click", findPokemon);
-  document.getElementById("addBtn").addEventListener("click", addToTeam);
+  const find_btn = document.getElementById("findBtn");
+  const add_btn = document.getElementById("addBtn");
+
+  if (find_btn) find_btn.addEventListener("click", find_pokemon);
+  if (add_btn) add_btn.addEventListener("click", add_pokemon_to_team);
+
+  update_add_button_state();
 });
 
-function cacheKey(q){
-  return "poke_cache_" + q.toLowerCase();
+function make_cache_key(query) {
+  return "poke_cache_" + String(query).toLowerCase();
 }
 
-async function getPokemon(q){
-  const key = cacheKey(q);
-  const saved = localStorage.getItem(key);
-  if(saved) return JSON.parse(saved);
+async function fetch_pokemon(query) {
+  const key = make_cache_key(query);
+  const cached = localStorage.getItem(key);
 
-  const res = await fetch("https://pokeapi.co/api/v2/pokemon/" + q.toLowerCase());
-  if(!res.ok) return null;
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch {
+      localStorage.removeItem(key);
+    }
+  }
+
+  const url = "https://pokeapi.co/api/v2/pokemon/" + String(query).toLowerCase();
+  const res = await fetch(url);
+
+  if (!res.ok) return null;
 
   const data = await res.json();
   localStorage.setItem(key, JSON.stringify(data));
   return data;
 }
 
-async function findPokemon(){
-  const q = document.getElementById("searchInput").value.trim();
-  if(q === "") return;
+async function find_pokemon() {
+  const input = document.getElementById("searchInput");
+  const query = input ? input.value.trim() : "";
+  if (!query) return;
 
-  const data = await getPokemon(q);
-  if(!data) return;
-  currentPokemon = data;
+  const data = await fetch_pokemon(query);
+  if (!data) return;
 
-  const img = document.getElementById("pokeImg"); const sprite = data.sprites?.front_default;
-   const art = data.sprites?.other?.["official-artwork"]?.front_default;
-  img.src = sprite || art || ""; img.alt = data.name || "";
+  selected_pokemon = data;
+
+  const img = document.getElementById("pokeImg");
+  const sprite = data.sprites?.front_default;
+  const artwork = data.sprites?.other?.["official-artwork"]?.front_default;
+
+  if (img) {
+    img.src = sprite || artwork || "";
+    img.alt = data.name || "";
+  }
 
   const audio = document.getElementById("pokeAudio");
-  const cry = data.cries?.latest || data.cries?.legacy || "";
-  audio.src = cry;
-  if(cry) audio.load();
+  const cry_url = data.cries?.latest || data.cries?.legacy || "";
 
-  const moves = data.moves.map(m => m.move.name);
+  if (audio) {
+    audio.src = cry_url;
+    if (cry_url) audio.load();
+  }
 
-  fillSelect("m1", moves);
-  fillSelect("m2", moves);
-  fillSelect("m3", moves);
-  fillSelect("m4", moves);
+  const move_names = (data.moves || []).map((m) => m.move.name);
 
-  filterNewPokemonAgainstTeamUI();
+  populate_move_dropdown("m1", move_names);
+  populate_move_dropdown("m2", move_names);
+  populate_move_dropdown("m3", move_names);
+  populate_move_dropdown("m4", move_names);
+
+  update_add_button_state();
 }
 
-function fillSelect(id, moves){
-  const sel = document.getElementById(id);
-  sel.innerHTML = "";
-  moves.forEach(name => {
+function populate_move_dropdown(select_id, move_names) {
+  const select = document.getElementById(select_id);
+  if (!select) return;
+
+  select.innerHTML = "";
+  move_names.forEach((name) => {
     const opt = document.createElement("option");
     opt.value = name;
     opt.textContent = name;
-    sel.appendChild(opt);
+    select.appendChild(opt);
   });
 }
 
-function addToTeam(){
-  if(!currentPokemon) return;
-  if(team.length >= 6) return;
+function add_pokemon_to_team() {
+  if (!selected_pokemon) return;
+  if (team_list.length >= 6) return;
 
-  const chosen = [
-    document.getElementById("m1").value,
-    document.getElementById("m2").value,
-    document.getElementById("m3").value,
-    document.getElementById("m4").value
+  const chosen_moves = [
+    document.getElementById("m1")?.value || "",
+    document.getElementById("m2")?.value || "",
+    document.getElementById("m3")?.value || "",
+    document.getElementById("m4")?.value || ""
   ];
 
-  const item = {
-    name: currentPokemon.name,
-    img: document.getElementById("pokeImg").src,
-    moves: chosen
+  const team_entry = {
+    name: selected_pokemon.name,
+    img: document.getElementById("pokeImg")?.src || "",
+    moves: chosen_moves
   };
 
-  team.push(item);
-  renderTeam();
+  team_list.push(team_entry);
+  render_team();
+  update_add_button_state();
 }
 
-function renderTeam(){
-  const teamArea = document.getElementById("teamArea");
-  if(team.length === 0){
-    teamArea.innerHTML = "";
+function render_team() {
+  const team_area = document.getElementById("teamArea");
+  if (!team_area) return;
+
+  if (team_list.length === 0) {
+    team_area.innerHTML = "";
     return;
   }
-
+// had to look this up below for table class just to get the right alignmenet
   let html = `<table class="teamTable">`;
-  team.forEach(p => {
+
+  team_list.forEach((p) => {
     html += `
       <tr>
         <td style="width:140px; text-align:center;">
@@ -98,21 +128,23 @@ function renderTeam(){
         </td>
         <td>
           <ul>
-            <li>${p.moves[0]}</li>
-            <li>${p.moves[2]}</li>
-            <li>${p.moves[1]}</li>
-            <li>${p.moves[3]}</li>
+            <li>${p.moves[0] || ""}</li>
+            <li>${p.moves[2] || ""}</li>
+            <li>${p.moves[1] || ""}</li>
+            <li>${p.moves[3] || ""}</li>
           </ul>
         </td>
       </tr>
     `;
   });
-  html += `</table>`;
 
-  teamArea.innerHTML = html;
+  html += `</table>`;
+  team_area.innerHTML = html;
 }
 
-function filterNewPokemonAgainstTeamUI(){
-  const addBtn = document.getElementById("addBtn");
-  addBtn.disabled = team.length >= 6;
+function update_add_button_state() {
+  const add_btn = document.getElementById("addBtn");
+  if (!add_btn) return;
+
+  add_btn.disabled = team_list.length >= 6;
 }
